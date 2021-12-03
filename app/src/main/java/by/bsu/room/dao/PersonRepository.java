@@ -10,8 +10,8 @@ import by.bsu.room.entity.Person;
 
 public class PersonRepository {
     private static PersonRepository instance;
-    private PersonDao personDao;
-    private LiveData<List<Person>> allPersons;
+    private final PersonDao personDao;
+    private final LiveData<List<Person>> allPersons;
 
     public PersonRepository(Application application) {
         AppDatabase db = AppDatabase.getInstance(application);
@@ -24,7 +24,7 @@ public class PersonRepository {
     }
 
     public void deleteAll() {
-        AppDatabase.databaseActionExecutors.execute(() -> personDao.deleteAll());
+        AppDatabase.databaseActionExecutors.execute(personDao::deleteAll);
     }
 
     public LiveData<List<Person>> getAllPersons() {
@@ -35,7 +35,7 @@ public class PersonRepository {
         return personDao.getPersonsWhoseNameOrSurnameStartsWithGivenText(text);
     }
 
-    public static PersonRepository getInstance(Application application) { // TODO: 03.12.2021 think about it 
+    public static PersonRepository getInstance(Application application) {
         if (instance == null) {
             instance = new PersonRepository(application);
         }
